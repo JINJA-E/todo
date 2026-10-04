@@ -1,0 +1,212 @@
+:root {
+  --bg: #f5f5f4;
+  --surface: #ffffff;
+  --text: #1c1917;
+  --muted: #78716c;
+  --border: #e7e5e4;
+  --accent: #2563eb;
+  --accent-text: #ffffff;
+  --danger: #dc2626;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1917;
+    --surface: #292524;
+    --text: #f5f5f4;
+    --muted: #a8a29e;
+    --border: #44403c;
+    --accent: #3b82f6;
+    --danger: #f87171;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  line-height: 1.5;
+}
+
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 48px 16px;
+}
+
+h1 {
+  margin: 0 0 24px;
+  font-size: 2rem;
+}
+
+input:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 입력 폼 */
+.new-todo {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.new-todo input,
+.edit {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  font: inherit;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.new-todo button {
+  padding: 0 20px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent-text);
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* 목록 */
+.todo-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.todo-list:empty {
+  display: none;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+}
+
+.todo-item:first-child {
+  border-top: none;
+}
+
+.toggle {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  cursor: text;
+}
+
+.completed .title {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.edit {
+  padding: 6px 10px;
+}
+
+.delete {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.todo-item:hover .delete,
+.delete:focus-visible {
+  opacity: 1;
+}
+
+.delete:hover {
+  color: var(--danger);
+}
+
+/* 터치 기기에서는 hover가 없으니 삭제 버튼을 항상 보여준다 */
+@media (hover: none) {
+  .delete {
+    opacity: 1;
+  }
+}
+
+.empty {
+  margin: 0;
+  padding: 32px 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* 하단 */
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.filters {
+  display: flex;
+  gap: 4px;
+}
+
+.footer button {
+  padding: 4px 10px;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.footer button:hover {
+  color: var(--text);
+}
+
+.filters .selected {
+  color: var(--text);
+  border-color: var(--border);
+}

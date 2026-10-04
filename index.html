@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Todo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <h1>할 일</h1>
+
+    <form id="new-todo-form" class="new-todo">
+      <input id="new-todo-input" type="text" placeholder="할 일을 입력하세요" autocomplete="off" maxlength="200" aria-label="새 할 일" autofocus>
+      <button type="submit">추가</button>
+    </form>
+
+    <ul id="todo-list" class="todo-list"></ul>
+    <p id="empty" class="empty"></p>
+
+    <footer id="footer" class="footer" hidden>
+      <span id="count"></span>
+      <div class="filters" role="group" aria-label="필터">
+        <button type="button" data-filter="all">전체</button>
+        <button type="button" data-filter="active">진행 중</button>
+        <button type="button" data-filter="completed">완료</button>
+      </div>
+      <button type="button" id="clear-completed">완료 항목 삭제</button>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
