@@ -1,24 +1,37 @@
 :root {
-  --bg: #f5f5f4;
+  --accent: #7c3aed;
+  --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
+  --accent-ink: color-mix(in srgb, var(--accent) 85%, black);
+
+  --bg: #f6f5fb;
   --surface: #ffffff;
-  --text: #1c1917;
-  --muted: #78716c;
-  --border: #e7e5e4;
-  --accent: #2563eb;
-  --accent-text: #ffffff;
-  --danger: #dc2626;
+  --surface-2: #f3f2f8;
+  --text: #1f1d2b;
+  --muted: #6e6b7b;
+  --subtle: #a19eae;
+  --border: #ebe9f1;
+  --danger: #e5484d;
+  --warning: #d97706;
+  --star: #f5a524;
+  --shadow: 0 1px 2px rgb(20 16 40 / 4%), 0 12px 32px -12px rgb(20 16 40 / 18%);
+
   color-scheme: light dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1c1917;
-    --surface: #292524;
-    --text: #f5f5f4;
-    --muted: #a8a29e;
-    --border: #44403c;
-    --accent: #3b82f6;
-    --danger: #f87171;
+    --accent-ink: color-mix(in srgb, var(--accent) 55%, white);
+
+    --bg: #121118;
+    --surface: #1c1a24;
+    --surface-2: #26232f;
+    --text: #f1eff7;
+    --muted: #a29fb0;
+    --subtle: #6c6979;
+    --border: #2e2b39;
+    --danger: #ff6369;
+    --warning: #f5a524;
+    --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 16px 40px -16px rgb(0 0 0 / 60%);
   }
 }
 
@@ -33,180 +46,739 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  background:
+    radial-gradient(60rem 30rem at 10% -10%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+    radial-gradient(40rem 24rem at 100% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%),
+    var(--bg);
+  background-repeat: no-repeat;
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-.app {
-  max-width: 560px;
-  margin: 0 auto;
-  padding: 48px 16px;
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
 }
 
-h1 {
-  margin: 0 0 24px;
-  font-size: 2rem;
-}
-
-input:focus-visible,
-button:focus-visible {
+:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* 입력 폼 */
-.new-todo {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.new-todo input,
-.edit {
-  flex: 1;
-  min-width: 0;
-  padding: 12px 14px;
-  font: inherit;
-  color: inherit;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
-
-.new-todo button {
-  padding: 0 20px;
-  font: inherit;
-  font-weight: 600;
-  color: var(--accent-text);
-  background: var(--accent);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-/* 목록 */
-.todo-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.todo-list:empty {
-  display: none;
-}
-
-.todo-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-top: 1px solid var(--border);
-}
-
-.todo-item:first-child {
-  border-top: none;
-}
-
-.toggle {
-  flex-shrink: 0;
+.icon {
   width: 18px;
   height: 18px;
-  margin: 0;
-  accent-color: var(--accent);
-  cursor: pointer;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.title {
-  flex: 1;
-  min-width: 0;
-  overflow-wrap: anywhere;
+.app {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 56px 16px 40px;
+}
+
+/* ---- 상단: 날짜, 제목, 진행률 ---- */
+
+.hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.today {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+
+.accent-picker {
+  display: flex;
+  gap: 8px;
+}
+
+.swatch {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--swatch);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.swatch:hover {
+  transform: scale(1.12);
+}
+
+.swatch.selected {
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--swatch);
+}
+
+.app-title {
+  margin: 4px 0 20px;
+}
+
+.title-input {
+  width: 100%;
+  padding: 0;
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: none;
+  border: none;
+  border-radius: 6px;
   cursor: text;
 }
 
-.completed .title {
+.title-input::placeholder {
+  color: var(--text);
+  opacity: 1;
+}
+
+.title-input:focus-visible {
+  outline: none;
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.progress-text {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
   color: var(--muted);
+}
+
+.progress-percent {
+  font-weight: 700;
+  color: var(--accent-ink);
+}
+
+.progress-track {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+.progress-bar {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 55%, white));
+  transition: width 0.4s ease;
+}
+
+/* ---- 카드 ---- */
+
+.card {
+  margin-top: 28px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+
+/* ---- 입력 영역 ---- */
+
+.composer-main {
+  display: flex;
+  gap: 8px;
+  padding: 6px 6px 6px 16px;
+  background: var(--surface-2);
+  border: 1px solid transparent;
+  border-radius: 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.composer-main:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.composer-main input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 0;
+  font-size: 1rem;
+  background: none;
+  border: none;
+}
+
+.composer-main input:focus-visible {
+  outline: none;
+}
+
+.add-button {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.1s;
+}
+
+.add-button:hover {
+  filter: brightness(1.1);
+}
+
+.add-button:active {
+  transform: scale(0.94);
+}
+
+.add-button .icon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.5;
+}
+
+.composer-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.field {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.field:focus-within,
+.field:hover {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+}
+
+.field .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.field select,
+.field input {
+  padding: 0;
+  color: var(--text);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.field select {
+  appearance: none;
+}
+
+.field select:focus-visible,
+.field input:focus-visible {
+  outline: none;
+}
+
+.field input::-webkit-calendar-picker-indicator {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+/* ---- 필터 ---- */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 20px 0 12px;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  background: var(--surface-2);
+  border-radius: 10px;
+}
+
+.segmented button {
+  padding: 5px 12px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.segmented button:hover {
+  color: var(--text);
+}
+
+.segmented button.selected {
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+}
+
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  --chip-color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.chip:not([data-category="all"])::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--chip-color);
+}
+
+.chip:hover {
+  color: var(--text);
+}
+
+.chip.selected {
+  color: color-mix(in srgb, var(--chip-color) 75%, var(--text));
+  background: color-mix(in srgb, var(--chip-color) 14%, transparent);
+  border-color: color-mix(in srgb, var(--chip-color) 40%, transparent);
+}
+
+/* ---- 목록 ---- */
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.todo-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px 10px 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.todo-item:hover {
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+}
+
+.todo-item.important {
+  background: color-mix(in srgb, var(--star) 7%, var(--surface));
+}
+
+.todo-item.dragging {
+  z-index: 1;
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+  transform: scale(1.015);
+}
+
+.todo-item.enter {
+  animation: item-in 0.25s ease-out;
+}
+
+.todo-item.leaving {
+  animation: item-out 0.18s ease-in forwards;
+}
+
+@keyframes item-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes item-out {
+  to {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}
+
+.handle {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 28px;
+  flex-shrink: 0;
+  padding: 0;
+  color: var(--subtle);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: grab;
+  touch-action: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.handle .icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  stroke: none;
+}
+
+.dragging .handle,
+.is-dragging .handle {
+  cursor: grabbing;
+}
+
+.toggle {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  margin: 0;
+  border: 2px solid color-mix(in srgb, var(--muted) 55%, transparent);
+  border-radius: 50%;
+  cursor: pointer;
+  appearance: none;
+  transition: background-color 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.toggle:hover {
+  border-color: var(--accent);
+}
+
+.toggle:active {
+  transform: scale(0.88);
+}
+
+.toggle:checked {
+  border-color: var(--accent);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 13px no-repeat var(--accent);
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  display: block;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  cursor: text;
+  transition: color 0.15s;
+}
+
+.completed .title {
+  color: var(--subtle);
   text-decoration: line-through;
 }
 
 .edit {
-  padding: 6px 10px;
+  width: 100%;
+  padding: 5px 10px;
+  font-size: 0.9375rem;
+  background: var(--surface-2);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
-.delete {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  font-size: 1.25rem;
-  line-height: 1;
+.edit:focus-visible {
+  outline: none;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.completed .meta {
+  opacity: 0.6;
+}
+
+.tag,
+.due-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  border-radius: 999px;
+}
+
+.tag {
+  color: color-mix(in srgb, var(--chip-color) 75%, var(--text));
+  background: color-mix(in srgb, var(--chip-color) 14%, transparent);
+}
+
+.due-chip {
   color: var(--muted);
+  background: var(--surface-2);
+  border: none;
+  cursor: pointer;
+}
+
+.due-chip .icon {
+  width: 11px;
+  height: 11px;
+  stroke-width: 2.5;
+}
+
+.due-chip.soon {
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+}
+
+.due-chip.today {
+  color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 14%, transparent);
+}
+
+.due-chip.overdue {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+}
+
+.actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.action {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--subtle);
   background: none;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   opacity: 0;
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
 }
 
-.todo-item:hover .delete,
-.delete:focus-visible {
+.action .icon {
+  width: 17px;
+  height: 17px;
+}
+
+.todo-item:hover .handle,
+.todo-item:hover .action,
+.todo-item:focus-within .handle,
+.todo-item:focus-within .action {
   opacity: 1;
+}
+
+.action:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.star.on {
+  color: var(--star);
+  opacity: 1;
+}
+
+.star.on .icon {
+  fill: currentColor;
 }
 
 .delete:hover {
   color: var(--danger);
 }
 
-/* 터치 기기에서는 hover가 없으니 삭제 버튼을 항상 보여준다 */
+.has-due .due-button {
+  display: none;
+}
+
+/* 날짜 선택 창을 띄우기 위한 보이지 않는 입력칸 */
+.due-picker {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 터치 기기에서는 hover가 없으니 버튼을 항상 보여준다 */
 @media (hover: none) {
-  .delete {
+  .handle,
+  .action {
     opacity: 1;
   }
 }
 
+/* ---- 빈 화면, 하단 ---- */
+
 .empty {
-  margin: 0;
-  padding: 32px 0;
+  padding: 36px 0 28px;
   text-align: center;
   color: var(--muted);
 }
 
-/* 하단 */
+.empty-icon {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 2rem;
+}
+
+.empty p {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
 .footer {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-top: 12px;
-  font-size: 0.875rem;
+  margin-top: 16px;
+  padding-top: 14px;
+  font-size: 0.8125rem;
   color: var(--muted);
+  border-top: 1px dashed var(--border);
 }
 
-.filters {
-  display: flex;
-  gap: 4px;
-}
-
-.footer button {
-  padding: 4px 10px;
-  font: inherit;
-  color: inherit;
+.text-button {
+  padding: 4px 8px;
+  color: var(--muted);
   background: none;
-  border: 1px solid transparent;
+  border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: color 0.15s, background 0.15s;
 }
 
-.footer button:hover {
-  color: var(--text);
+.text-button:hover {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
 }
 
-.filters .selected {
-  color: var(--text);
-  border-color: var(--border);
+.hint {
+  margin: 16px 0 0;
+  font-size: 0.75rem;
+  text-align: center;
+  color: var(--subtle);
+}
+
+/* ---- 알림, 축하 효과 ---- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  z-index: 60;
+  padding: 12px 20px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--text);
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translate(-50%, 20px);
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.confetti {
+  position: fixed;
+  top: -16px;
+  z-index: 50;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  pointer-events: none;
+  animation: confetti-fall linear forwards;
+}
+
+@keyframes confetti-fall {
+  to {
+    transform: translate(var(--drift), 110vh) rotate(var(--spin));
+  }
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding-top: 32px;
+  }
+
+  .title-input {
+    font-size: 1.75rem;
+  }
+
+  .card {
+    padding: 14px;
+    border-radius: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

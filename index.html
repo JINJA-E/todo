@@ -3,31 +3,79 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Todo</title>
+  <title>할 일</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="app">
-    <h1>할 일</h1>
-
-    <form id="new-todo-form" class="new-todo">
-      <input id="new-todo-input" type="text" placeholder="할 일을 입력하세요" autocomplete="off" maxlength="200" aria-label="새 할 일" autofocus>
-      <button type="submit">추가</button>
-    </form>
-
-    <ul id="todo-list" class="todo-list"></ul>
-    <p id="empty" class="empty"></p>
-
-    <footer id="footer" class="footer" hidden>
-      <span id="count"></span>
-      <div class="filters" role="group" aria-label="필터">
-        <button type="button" data-filter="all">전체</button>
-        <button type="button" data-filter="active">진행 중</button>
-        <button type="button" data-filter="completed">완료</button>
+    <header class="hero">
+      <div class="hero-top">
+        <p id="today" class="today"></p>
+        <div id="accent-picker" class="accent-picker" role="group" aria-label="테마 색상"></div>
       </div>
-      <button type="button" id="clear-completed">완료 항목 삭제</button>
-    </footer>
+
+      <h1 class="app-title">
+        <input id="title-input" class="title-input" type="text" maxlength="30" placeholder="할 일" aria-label="목록 제목 (클릭해서 수정)" title="클릭해서 제목 바꾸기" spellcheck="false" autocomplete="off">
+      </h1>
+
+      <div id="progress" class="progress">
+        <div class="progress-text">
+          <span id="progress-label"></span>
+          <span id="progress-percent" class="progress-percent"></span>
+        </div>
+        <div class="progress-track">
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <form id="new-todo-form" class="composer">
+        <div class="composer-main">
+          <input id="new-todo-input" type="text" placeholder="새로운 할 일을 입력하세요" autocomplete="off" maxlength="200" aria-label="새 할 일" autofocus>
+          <button type="submit" class="add-button" aria-label="추가" title="추가">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+        <div class="composer-options">
+          <label class="field">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5"/></svg>
+            <select id="new-todo-category" aria-label="카테고리"></select>
+          </label>
+          <label class="field">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <input id="new-todo-due" type="date" aria-label="마감일">
+          </label>
+        </div>
+      </form>
+
+      <div class="toolbar">
+        <div class="segmented" role="group" aria-label="상태 필터">
+          <button type="button" data-filter="all">전체</button>
+          <button type="button" data-filter="active">진행 중</button>
+          <button type="button" data-filter="completed">완료</button>
+        </div>
+        <div id="category-filters" class="category-filters" role="group" aria-label="카테고리 필터"></div>
+      </div>
+
+      <ul id="todo-list" class="todo-list"></ul>
+
+      <div id="empty" class="empty">
+        <span class="empty-icon" aria-hidden="true">📝</span>
+        <p id="empty-text"></p>
+      </div>
+
+      <footer id="footer" class="footer" hidden>
+        <span id="count"></span>
+        <button type="button" id="clear-completed" class="text-button">완료 항목 삭제</button>
+      </footer>
+    </section>
+
+    <p class="hint">제목을 더블클릭하면 수정할 수 있어요 · ⠿ 손잡이를 끌면 순서가 바뀌어요</p>
   </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="app.js"></script>
 </body>
